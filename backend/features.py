@@ -41,7 +41,7 @@ def extract_features(file_path):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
-        print("Usage: python features.py path/to/song.mp3")
+        print("Usage: py features.py path/to/song.mp3")
     else:
         path = sys.argv[1]
         result = extract_features(path)
