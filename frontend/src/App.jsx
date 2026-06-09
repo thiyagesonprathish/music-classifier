@@ -224,6 +224,27 @@ export default function App() {
         </div>
       )}
 
+      {/* FOOTER */}
+      <div style={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: "12px 24px",
+        textAlign: "center",
+        fontSize: "11px",
+        letterSpacing: "0.15em",
+        color: "#3a3a50",
+        background: "transparent",
+        pointerEvents: "none",
+      }}>
+        © 2026 THIYAGESON PRATHISH · MUSIC INTELLIGENCE
+      </div>
+
+    </div>
+  )
+}
+
       {screen === "results" && result && (
         <div style={{ width: "100%", maxWidth: "560px" }}>
           <div style={{
@@ -237,7 +258,7 @@ export default function App() {
             <div style={{ fontSize: "56px", marginBottom: "12px" }}>{result.emoji}</div>
             <div style={{
               fontFamily: "Syne, sans-serif",
-              fontSize: "48px",
+              fontSize: "clamp(32px, 8vw, 48px)",
               fontWeight: 800,
               color: theme.text,
               textTransform: "capitalize",
@@ -338,6 +359,7 @@ export default function App() {
             }
           `}</style>
         </div>
+    
       )}
 
     </div>
