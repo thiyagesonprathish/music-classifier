@@ -2,8 +2,8 @@ import librosa
 import numpy as np
 
 def extract_features(file_path):
-    # Load the audio file (only first 30 seconds)
-    y, sr = librosa.load(file_path, duration=30)
+    # Load the audio file (only first 15 seconds)
+    y, sr = librosa.load(file_path, duration=15, res_type='kaiser_fast')
 
     # Tempo (BPM)
     tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
