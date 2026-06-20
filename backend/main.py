@@ -19,6 +19,7 @@ app.add_middleware(
 
 # Load the trained model
 mood_model = joblib.load("mood_model.pkl")
+genre_model = joblib.load("genre_model.pkl")
 
 # Mood metadata — colors and emojis for the frontend
 MOOD_META = {
@@ -51,6 +52,11 @@ async def analyze(file: UploadFile = File(...)):
         mood_proba = mood_model.predict_proba(features_2d)[0]
         confidence = round(float(np.max(mood_proba)) * 100, 1)
 
+        #Predict Genre
+        genre = genre_model.predict(features_2d)[0]
+        genre_proba = genre_model.predict_proba(features_2d)[0]
+        genre_confidence = round(float(np.max(genre_proba)) * 100, 1)
+
         # Get BPM and energy directly from features
         bpm = round(float(features[0]), 1)
         energy = round(float(features[27]) * 1000, 2)  # RMS energy scaled
@@ -63,6 +69,8 @@ async def analyze(file: UploadFile = File(...)):
             "confidence": confidence,
             "bpm": bpm,
             "energy": min(round(energy * 10, 1), 100),
+            "genre": genre,
+            "genre_confidence": genre_confidence,
         }
 
     except Exception as e:

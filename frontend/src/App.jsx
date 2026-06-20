@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { Upload, Music, RotateCcw } from "lucide-react"
 
-const API_URL = "https://music-classifier-8f2v.onrender.com"
+const API_URL = "http://127.0.0.1:8000"
 
 const MOOD_THEMES = {
   happy:     { bg: "#FFD93D", glow: "rgba(255,217,61,0.15)",  text: "#1a1a00" },
@@ -293,6 +293,36 @@ const messages = [
             <div style={{ fontSize: "14px", color: theme.text, opacity: 0.6 }}>
               {result.description}
             </div>
+          </div>
+          
+          {/* GENRE BADGE */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px",
+            background: "#111118",
+            border: "1px solid #1e1e2e",
+            borderRadius: "4px",
+            padding: "14px 20px",
+            marginBottom: "12px",
+            animation: "fadeUp 0.6s 0.05s ease both",
+          }}>
+            <span style={{ fontSize: "12px", color: "#6a6a80", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+              Genre
+            </span>
+            <span style={{
+              fontFamily: "Syne, sans-serif",
+              fontSize: "16px",
+              fontWeight: 700,
+              color: theme.bg,
+              textTransform: "capitalize",
+            }}>
+              {result.genre}
+            </span>
+            <span style={{ fontSize: "11px", color: "#3a3a50" }}>
+              ({result.genre_confidence}% confident)
+            </span>
           </div>
 
           <div style={{
