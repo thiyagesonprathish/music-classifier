@@ -18,28 +18,58 @@ export default function App() {
   const [fileName, setFileName] = useState("")
   const fileRef = useRef()
 
-  const analyze = async (file) => {
-    setFileName(file.name)
-    setScreen("analyzing")
-    setError(null)
+ const [status, setStatus] = useState("")
 
-    const formData = new FormData()
-    formData.append("file", file)
+const analyze = async (file) => {
+  setFileName(file.name)
+  setScreen("analyzing")
+  setError(null)
+  setStatus("Uploading your track...")
 
-    try {
-      const res = await fetch(`${API_URL}/analyze`, {
-        method: "POST",
-        body: formData,
-      })
-      const data = await res.json()
-      if (data.error) throw new Error(data.error)
-      setResult(data)
-      setScreen("results")
-    } catch (e) {
+  const formData = new FormData()
+  formData.append("file", file)
+
+  // Status messages that update every few seconds
+  const messages = [
+    "Uploading your track...",
+    "Waking up the backend...",
+    "Extracting audio features...",
+    "Analyzing tempo and energy...",
+    "Running the mood model...",
+    "Almost there...",
+  ]
+  let msgIndex = 0
+  const msgInterval = setInterval(() => {
+    msgIndex = Math.min(msgIndex + 1, messages.length - 1)
+    setStatus(messages[msgIndex])
+  }, 8000)
+
+  // Timeout after 90 seconds
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 90000)
+
+  try {
+    const res = await fetch(`${API_URL}/analyze`, {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
+    })
+    const data = await res.json()
+    if (data.error) throw new Error(data.error)
+    setResult(data)
+    setScreen("results")
+  } catch (e) {
+    if (e.name === "AbortError") {
+      setError("The backend took too long to respond. It may be waking up — please try again in 30 seconds.")
+    } else {
       setError(e.message)
-      setScreen("upload")
     }
+    setScreen("upload")
+  } finally {
+    clearInterval(msgInterval)
+    clearTimeout(timeout)
   }
+}
 
   const handleFile = (file) => {
     if (!file) return
@@ -186,43 +216,47 @@ export default function App() {
       )}
 
       {screen === "analyzing" && (
-        <div style={{ textAlign: "center" }}>
-          <div style={{
-            display: "flex",
-            gap: "8px",
-            justifyContent: "center",
-            marginBottom: "32px",
-          }}>
-            {[0,1,2,3,4].map(i => (
-              <div key={i} style={{
-                width: "4px",
-                borderRadius: "2px",
-                background: "#e8ff6e",
-                animation: `wave 1s ease-in-out ${i * 0.15}s infinite alternate`,
-                height: "40px",
-              }} />
-            ))}
-          </div>
-          <div style={{
-            fontFamily: "Syne, sans-serif",
-            fontSize: "22px",
-            fontWeight: 700,
-            color: "#fff",
-            marginBottom: "8px",
-          }}>
-            Analyzing...
-          </div>
-          <div style={{ fontSize: "12px", color: "#6a6a80" }}>
-            {fileName}
-          </div>
-          <style>{`
-            @keyframes wave {
-              from { transform: scaleY(0.3); opacity: 0.4; }
-              to   { transform: scaleY(1);   opacity: 1; }
-            }
-          `}</style>
-        </div>
-      )}
+  <div style={{ textAlign: "center" }}>
+    <div style={{
+      display: "flex",
+      gap: "8px",
+      justifyContent: "center",
+      marginBottom: "32px",
+    }}>
+      {[0,1,2,3,4].map(i => (
+        <div key={i} style={{
+          width: "4px",
+          borderRadius: "2px",
+          background: "#e8ff6e",
+          animation: `wave 1s ease-in-out ${i * 0.15}s infinite alternate`,
+          height: "40px",
+        }} />
+      ))}
+    </div>
+    <div style={{
+      fontFamily: "Syne, sans-serif",
+      fontSize: "22px",
+      fontWeight: 700,
+      color: "#fff",
+      marginBottom: "8px",
+    }}>
+      {status}
+    </div>
+    <div style={{ fontSize: "12px", color: "#6a6a80", marginBottom: "8px" }}>
+      {fileName}
+    </div>
+    <div style={{ fontSize: "11px", color: "#3a3a50" }}>
+      First request may take up to 60 seconds
+    </div>
+    <style>{`
+      @keyframes wave {
+        from { transform: scaleY(0.3); opacity: 0.4; }
+        to   { transform: scaleY(1);   opacity: 1; }
+      }
+    `}</style>
+  </div>
+)}
+
 
       {screen === "results" && result && (
         <div style={{ width: "100%", maxWidth: "560px" }}>
