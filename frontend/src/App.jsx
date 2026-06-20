@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { Upload, Music, RotateCcw } from "lucide-react"
 
-const API_URL = "http://127.0.0.1:8000"
+const API_URL = "https://music-classifier-8f2v.onrender.com"
 
 const MOOD_THEMES = {
   happy:     { bg: "#FFD93D", glow: "rgba(255,217,61,0.15)",  text: "#1a1a00" },
