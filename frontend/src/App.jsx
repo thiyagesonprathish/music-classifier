@@ -173,6 +173,15 @@ const messages = [
             </div>
           </div>
 
+          <div style={{
+              marginTop: "12px",
+              textAlign: "center",
+              fontSize: "11px",
+              color: "#3a3a50",
+            }}>
+              ⏱ First analysis may take up to a minute — free server wakes up on demand
+            </div>
+
           <input
             ref={fileRef}
             type="file"
