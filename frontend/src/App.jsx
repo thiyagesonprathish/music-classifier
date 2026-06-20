@@ -30,14 +30,14 @@ const analyze = async (file) => {
   formData.append("file", file)
 
   // Status messages that update every few seconds
-  const messages = [
-    "Uploading your track...",
-    "Waking up the backend...",
-    "Extracting audio features...",
-    "Analyzing tempo and energy...",
-    "Running the mood model...",
-    "Almost there...",
-  ]
+const messages = [
+  "Uploading your track...",
+  "Waking up the backend (this can take a minute)...",
+  "Extracting audio features...",
+  "Still working — free server is a bit slow...",
+  "Almost there, hang tight...",
+  "Just a little longer...",
+]
   let msgIndex = 0
   const msgInterval = setInterval(() => {
     msgIndex = Math.min(msgIndex + 1, messages.length - 1)
@@ -46,7 +46,7 @@ const analyze = async (file) => {
 
   // Timeout after 90 seconds
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 90000)
+  const timeout = setTimeout(() => controller.abort(), 240000)
 
   try {
     const res = await fetch(`${API_URL}/analyze`, {
